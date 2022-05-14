@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "start": "echo \"Starting the bot!\" && node .",
   "scripts": {
     "setup": "echo \"Registering interactions\" && node lib/setupSlashInteractions",
     "start": "echo \"Starting the bot!\" && node ."
