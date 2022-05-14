@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "engines": {
+    "node": "18.x"
+  },
   "start": "echo \"Starting the bot!\" && node .",
   "scripts": {
     "setup": "echo \"Registering interactions\" && node lib/setupSlashInteractions",
