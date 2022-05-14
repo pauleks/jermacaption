@@ -1,6 +1,7 @@
 <div align="center">
     <h1>Caption It Jerma!</h1>
     <img src="https://cdn.discordapp.com/attachments/747100248425365665/975018540371439676/jerma.gif" alt="when jerma discord bot reaction gif"/>
+    <br>
     <u><a href="https://discord.com/api/oauth2/authorize?client_id=974744783933276191&scope=applications.commands" target="_blank">CLICK HERE TO ADD THE BOT TO YOUR SERVER!</a></u>
 </div>
 
