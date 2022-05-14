@@ -65,7 +65,7 @@ fastify.post('/interactions', async (req, res) => {
     }
 });
 
-fastify.listen(process.env.PORT || 80, (err, address) => {
+fastify.listen(process.env.PORT || 80, '0.0.0.0', (err, address) => {
     if (err) {
         console.error(err);
         process.exit(1);
