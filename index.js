@@ -45,7 +45,7 @@ fastify.post('/interactions', async (req, res) => {
             return req.respond(formData);
         }
 
-        let text = filter.clean(req.body.data.options[0].value);
+        let text = req.body.data.options[0].value; //filter.clean(req.body.data.options[0].value); let's hope that people won't abuse this pls pls pls pls pls
 
         try {
             let file = await generate(text, `${req.body.id}-${req.body.member.user.id}`), formData = new FormData();
