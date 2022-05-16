@@ -18,8 +18,9 @@
     "@fastify/helmet": "^8.0.1",
     "dotenv": "^16.0.1",
     "fastify": "^3.29.0",
-    "jimp": "^0.16.1",
     "leo-profanity": "^1.5.0",
+    "probe-image-size": "^7.2.3",
+    "puppeteer": "^14.1.0",
     "tweetnacl": "^1.0.3"
   }
 }
