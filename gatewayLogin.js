@@ -10,8 +10,8 @@ client.on('interactionCreate', async (interaction) => {
     await interaction.deferReply();
 
     try {
-        if (text.length > 2000) {
-            return interaction.editReply(':warning: The text cannot be longer than 2000 characters!');
+        if (text.length > 10000) {
+            return interaction.editReply(':warning: The text cannot be longer than 10000 characters!');
         }
 
         try {
