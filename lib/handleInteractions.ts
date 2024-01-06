@@ -1,12 +1,17 @@
-const { InteractionCallbackTypes } = require('./constants');
-const fetch = require('node-fetch');
+import { InteractionCallbackTypes } from './constants';
+import fetch from 'node-fetch';
 
-const commonHeaders = {
+interface Interaction {
+    id: string;
+    token: string;
+}
+
+const commonHeaders: Record<string, string> = {
     'Authorization': `Bot ${process.env.BOTTOKEN}`,
     'User-Agent': 'DiscordBot/JermaCaptionBot'
 };
 
-const acknowledge = (interaction) => {
+const acknowledge = (interaction: Interaction): Promise<void> => {
     const body = { type: InteractionCallbackTypes.ACKNOWLEDGE };
 
     return fetch(`https://discord.com/api/interactions/${interaction.id}/${interaction.token}/callback`, {
@@ -19,7 +24,7 @@ const acknowledge = (interaction) => {
     }).then(() => {});
 };
 
-const respond = (interaction, data) => {
+const respond = (interaction: Interaction, data: any): Promise<void> => {
     return fetch(`https://discord.com/api/webhooks/${process.env.APPLICATIONID}/${interaction.token}/messages/@original`, {
         method: 'PATCH',
         body: data,
@@ -27,4 +32,4 @@ const respond = (interaction, data) => {
     }).then(() => {});
 };
 
-module.exports = { acknowledge, respond };
+export { acknowledge, respond };
