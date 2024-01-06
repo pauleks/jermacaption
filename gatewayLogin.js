@@ -2,28 +2,29 @@ const Discord = require('discord.js');
 const { generate } = require('./lib/generateGif');
 
 const client = new Discord.Client({ intents: [] });
-
 require('dotenv').config();
 
 client.on('interactionCreate', async (interaction) => {
-    const text = interaction.options.getString('text', true);
-    await interaction.deferReply();
-
     try {
+        const text = interaction.options.getString('text', true);
+
         if (text.length > 10000) {
-            return interaction.editReply(':warning: The text cannot be longer than 10000 characters!');
+            return interaction.reply(':warning: The text cannot be longer than 10000 characters!');
         }
 
+        await interaction.deferReply();
+
+        let attachment;
         try {
-            let attachment = await generate(text, `${interaction.id}-${interaction.member.user.id}`);
+            attachment = await generate(text, `${interaction.id}-${interaction.member.user.id}`);
             interaction.editReply({ files: [{ attachment, name: 'jerma.gif' }] });
         } catch (err) {
-            console.error(err);
-            return interaction.editReply(':sweat_smile: Sorry! Something went wrong. Try again later.');
+            console.error(`Error generating GIF: ${err}`);
+            return interaction.editReply(':sweat_smile: Sorry! Something went wrong while generating the GIF. Please try again later.');
         }
     } catch (err) {
-        console.error(err);
-        return interaction.editReply(':sweat_smile: Sorry! Something went wrong. Try again later.');
+        console.error(`Error processing interaction: ${err}`);
+        return interaction.reply(':sweat_smile: Sorry! Something went wrong. Please try again later.');
     }
 });
 

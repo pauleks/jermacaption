@@ -17,7 +17,7 @@ fastify.decorateRequest('acknowledge', async function () {
     }
 });
 
-fastify.decorateRequest('respond', async function (response) {
+fastify.decorateRequest('respond', async function (response: any) {
     try {
         await respond(this.body, response);
     } catch (err) {
@@ -25,11 +25,11 @@ fastify.decorateRequest('respond', async function (response) {
     }
 });
 
-fastify.get('/', async (req, res) => {
+fastify.get('/', async (req: any, res: any) => {
     res.send(`Hi! This website operates as the host for Caption It Jerma! bot. If you somehow found this - congrats.\nAnyways, you can add the bot from here: ${process.env.LANDINGPAGE}`);
 });
 
-fastify.post('/interactions', async (req, res) => {
+fastify.post('/interactions', async (req: any, res: any) => {
     if (!req.headers['x-signature-ed25519'] || !req.headers['x-signature-timestamp']) return res.redirect('https://www.youtube.com/watch?v=dQw4w9WgXcQ');
     if (!await verifyRequest(req)) return res.status(401).send('');
 
@@ -65,7 +65,7 @@ fastify.post('/interactions', async (req, res) => {
     }
 });
 
-fastify.listen(process.env.PORT || 80, '0.0.0.0', (err, address) => {
+fastify.listen(process.env.PORT || 80, '0.0.0.0', (err: Error, address: string) => {
     if (err) {
         console.error(err);
         process.exit(1);
