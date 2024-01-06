@@ -1,6 +1,6 @@
 import * as path from 'path';
 import { promises as fs } from 'fs';
-import * as puppeteer from 'puppeteer';
+import puppeteer from 'puppeteer';
 import { exec } from 'child_process';
 import * as imageSize from 'image-size';
 import * as crypto from 'crypto';
