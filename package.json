@@ -1,29 +1,35 @@
 {
   "name": "jermacaption",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.ts",
   "engines": {
-    "node": "18.x"
+    "node": "20.x"
   },
   "start": "echo \"Starting the bot!\" && node .",
   "scripts": {
-    "setup": "echo \"Registering interactions\" && node lib/setupSlashInteractions",
-    "start": "echo \"Starting the bot!\" && node ."
+    "dev": "nodemon src/index.ts",
+    "compile": "tsc",
+    "start": "node out"
   },
   "keywords": [],
-  "author": "TheOnlyGhostwolf",
-  "license": "Unlicensed",
+  "author": "github:pauleks",
+  "license": "MIT",
   "dependencies": {
-    "@fastify/helmet": "^8.0.1",
-    "discord.js": "^13.7.0",
+    "@discordjs/core": "^1.1.1",
+    "canvas": "^2.11.2",
+    "consola": "^3.2.3",
+    "discord.js": "^13.17.1",
     "dotenv": "^16.0.1",
     "fastify": "^3.29.4",
     "image-size": "^1.0.1",
     "leo-profanity": "^1.5.0",
-    "node-fetch": "^3.3.2",
-    "puppeteer": "^14.1.0",
-    "tsc": "^2.0.4",
+    "node-canvas-with-twemoji-and-discord-emoji": "^1.2.1",
     "tweetnacl": "^1.0.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
   }
 }

@@ -1,3 +1,6 @@
 node_modules
 .env
 _temp
+version.txt
+banned_users.txt
+out
