@@ -21,20 +21,23 @@ const joinPath = (...paths: string[]) => {
 export const generateGIF = async (gif: string, identifier: string): Promise<Buffer> => {
   try {
     const textPath = joinPath(`_temp/texts/${identifier}.png`);
-    const gifPath = joinPath(`assets/${gif}.gif`)
+    const gifPath = joinPath(`assets/${gif}.gif`);
+    const destinationPath = joinPath(`_temp/${identifier}.gif`);
+    const palettePath = joinPath(`_temp/${identifier}-palette.png`);
 
     await sh(
-      `ffmpeg -i "${textPath}" -i "${gifPath}" -filter_complex "[0:v]scale=700:-1:flags=fast_bilinear[v0]; [1:v]scale=700:-1:flags=fast_bilinear[v1]; [v0][v1]vstack=inputs=2[v]" -map "[v]" "${joinPath(`_temp/${identifier}.gif`)}"`
-    );
+      `ffmpeg -i "${textPath}" -i "${gifPath}" -filter_complex "[0:v]scale=700:-1[v0]; [1:v]scale=700:-1[v1]; [v0][v1]vstack=inputs=2,fps=15,palettegen[v]" -map "[v]" -y "${palettePath}"`
+    )
+
     await sh(
-      `ffmpeg -i "${joinPath(`_temp/${identifier}.gif`)}" -vf "fps=15,scale=350:-1" -fs 7M -loop 0 "${joinPath(`_temp/${identifier}-optimized.gif`)}"`
-    );
+      `ffmpeg -i "${textPath}" -i "${gifPath}" -i "${palettePath}" -filter_complex "[0:v]scale=700:-1[v0]; [1:v]scale=700:-1[v1]; [v0][v1]vstack=inputs=2,fps=15[v]; [v][2:v]paletteuse[v_optimized]" -map "[v_optimized]" -fs 15M -b:v 10M -loop 0 "${destinationPath}"`
+    )
 
-    const image = await fs.readFile(joinPath(`_temp/${identifier}-optimized.gif`));
+    const image = await fs.readFile(destinationPath);
 
-    await fs.unlink(joinPath(`_temp/texts/${identifier}.png`))
-    await fs.unlink(joinPath(`_temp/${identifier}.gif`))
-    await fs.unlink(joinPath(`_temp/${identifier}-optimized.gif`))
+    await fs.unlink(textPath);
+    await fs.unlink(palettePath);
+    await fs.unlink(destinationPath);
 
     return image;
   } catch (err) {
