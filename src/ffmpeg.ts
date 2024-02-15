@@ -2,8 +2,8 @@ import { exec } from "child_process";
 import fs from 'fs/promises';
 import * as path from 'path';
 
-const sh = (command: string): Promise<{ stdout: string; stderr: string }> =>
-  new Promise((resolve, reject) => {
+const sh = (command: string): Promise<{ stdout: string, stderr: string }> => {
+  return new Promise((resolve, reject) => {
     exec(command, (err, stdout, stderr) => {
       if (err) {
         reject(err);
@@ -12,6 +12,8 @@ const sh = (command: string): Promise<{ stdout: string; stderr: string }> =>
       }
     });
   });
+};
+
 
 export const generateGIF = async (gif: string, identifier: string): Promise<Buffer> => {
   try {
