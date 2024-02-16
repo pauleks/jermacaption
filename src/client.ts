@@ -84,6 +84,14 @@ export const launchBot = () => {
   }
 };
 
+const returnGIFQuery = (searchQuery: string) => {
+  return currentGIFs
+    .filter((result) =>
+      result.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+    .slice(0, 25);
+}
+
 const handleAutocomplete = async (interaction: AutocompleteInteraction) => {
   const searchPhrase = interaction.options.get("gif")?.value as string;
   if (searchPhrase == "")
@@ -93,11 +101,7 @@ const handleAutocomplete = async (interaction: AutocompleteInteraction) => {
         .slice(0, 25)
     );
 
-  const matchingResults = currentGIFs
-    .filter((result) =>
-      result.toLowerCase().includes(searchPhrase.toLowerCase())
-    )
-    .slice(0, 25);
+  const matchingResults = returnGIFQuery(searchPhrase);
 
   return interaction.respond(
     matchingResults.map((result) => ({ name: result, value: result }))
@@ -109,9 +113,9 @@ async function handleNewGIF(
   text: string,
   gif?: string
 ): Promise<void> {
-  if (gif) {
+  if (gif && returnGIFQuery(gif).length == 1) {
     // If a GIF is provided, call the function to handle the provided GIF
-    await handleNewGIFWithGif(interaction, text, gif);
+    await handleNewGIFWithGif(interaction, text, returnGIFQuery(gif)[0]);
   } else {
     // If no GIF is provided, call the function to handle a random GIF
     await handleNewGIFWithRandomGif(interaction, text);
