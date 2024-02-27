@@ -1,23 +1,33 @@
 import fs from 'fs';
-import crypto from 'crypto';
+import { createReadStream } from 'fs';
+import { promisify } from 'util';
+import { randomInt } from 'crypto';
+
+const readStream = promisify(fs.createReadStream);
 
 export const getGIFNames = () => {
-    const files = fs.readdirSync("./assets", { withFileTypes: true });
-    return files
-        .filter((el) => el.isFile() && el.name.endsWith('.gif'))
-        .map((val) => val.name.slice(0, -4));
+    return fs.readdirSync("./assets", { withFileTypes: true })
+             .filter((el) => el.isFile())
+             .map((val) => val.name.slice(0,-4));
 }
 
 export const getRandomFile = (allFiles: string[]) => {
-    const randomIndex = crypto.randomInt(0, allFiles.length);
+    const randomIndex = randomInt(0, allFiles.length);
     return allFiles[randomIndex];
 }
 
-export const getBannedUsers = () => {
-    const banList = fs.readFileSync("./config/banned_users.txt", "utf-8");
-    const lines = banList.split("\n");
-    const bannedUsers = lines
-        .filter((el) => !el.startsWith("#") && el.trim().length > 0)
-        .map((el) => el.split(/\s+/)[0]);
+export const getBannedUsers = async () => {
+    const bannedUsers = [];
+
+    const stream = createReadStream("./config/banned_users.txt", { encoding: "utf-8" });
+
+    for await (const line of stream) {
+        const trimmedLine = line.trim();
+        if (trimmedLine && !trimmedLine.startsWith("#")) {
+            const userId = trimmedLine.split(/\s+/)[0];
+            bannedUsers.push(userId);
+        }
+    }
+
     return bannedUsers;
-}
+};
