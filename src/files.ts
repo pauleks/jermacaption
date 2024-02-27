@@ -1,21 +1,23 @@
 import fs from 'fs';
+import crypto from 'crypto';
 
 export const getGIFNames = () => {
-    return fs.readdirSync("./assets", { withFileTypes: true }).filter((el) => el.isFile()).map((val) => val.name.slice(0,-4));
+    const files = fs.readdirSync("./assets", { withFileTypes: true });
+    return files
+        .filter((el) => el.isFile() && el.name.endsWith('.gif'))
+        .map((val) => val.name.slice(0, -4));
 }
 
 export const getRandomFile = (allFiles: string[]) => {
-    const randomArray = new Uint32Array(1);
-    crypto.getRandomValues(randomArray);
-    const randomIndex = randomArray[0] % allFiles.length;
+    const randomIndex = crypto.randomInt(0, allFiles.length);
     return allFiles[randomIndex];
 }
 
 export const getBannedUsers = () => {
-    let banList = fs.readFileSync("./config/banned_users.txt").toString();
-    const newBanlist = [];
-    return banList
-        .split("\n")
-        .filter((el) => !el.startsWith("#"))
-        .map((el) => el.split(" ")[0]);
+    const banList = fs.readFileSync("./config/banned_users.txt", "utf-8");
+    const lines = banList.split("\n");
+    const bannedUsers = lines
+        .filter((el) => !el.startsWith("#") && el.trim().length > 0)
+        .map((el) => el.split(/\s+/)[0]);
+    return bannedUsers;
 }
