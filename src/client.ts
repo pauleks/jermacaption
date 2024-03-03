@@ -19,7 +19,6 @@ type QueueItem = {
   gif: string;
 };
 
-// Initialize the gifQueue array with the specified type
 const gifQueue: QueueItem[] = [];
 let isProcessingGif = false;
 
@@ -114,10 +113,8 @@ async function handleNewGIF(
   gif?: string
 ): Promise<void> {
   if (gif && returnGIFQuery(gif).length == 1) {
-    // If a GIF is provided, call the function to handle the provided GIF
     await handleNewGIFWithGif(interaction, text, returnGIFQuery(gif)[0]);
   } else {
-    // If no GIF is provided, call the function to handle a random GIF
     await handleNewGIFWithRandomGif(interaction, text);
   }
 }
@@ -128,10 +125,8 @@ async function handleNewGIFWithGif(
   gif: string
 ): Promise<void> {
   if (isProcessingGif) {
-    // If a GIF is already being processed, add the interaction to the queue
     gifQueue.push({ interaction, text, gif });
   } else {
-    // Otherwise, process the GIF
     isProcessingGif = true;
     await processGif(interaction, text, gif);
   }
