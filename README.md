@@ -12,4 +12,4 @@ Currently being reworked on.
 This is a more experimental build so don't expect some of the features to make it to the official repository
 
 Official build by Pauleks (epic): 
-- ![](https://github.com/pauleks/jermacaption)
+- [jermacaption](https://github.com/pauleks/jermacaption)
