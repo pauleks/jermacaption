@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs from 'fs/promises'; // Using fs.promises for async file operations
 import { consola } from 'consola';
 import Constants from './constants';
 import { API, RESTPutAPIApplicationCommandsJSONBody } from '@discordjs/core';
@@ -16,9 +16,10 @@ export const checkToken = async (DISCORD_API: API) => {
 };
 
 export const checkSetup = async (DISCORD_API: API) => {
-    if (fs.existsSync('./config/version.txt')) {
+    try {
+        await fs.access('./config/version.txt'); // Check if the file exists
         consola.info("Configuration version file found. If you want to redo the first time setup, delete config/version.txt.");
-    } else {
+    } catch (err) {
         await initiateSetup(DISCORD_API);
     }
 };
@@ -29,18 +30,18 @@ const initiateSetup = async (DISCORD_API: API) => {
     const hasCmds = await hasApplicationCommands(DISCORD_API);
     if (!hasCmds) {
         await registerInteractionCommands(DISCORD_API);
-        createConfigFiles();
+        await createConfigFiles();
     } else {
         let answer = await consola.prompt("Your bot already has interaction commands. Do you want to override them?", { type: "confirm" });
         if (answer) {
             await registerInteractionCommands(DISCORD_API);
-            createConfigFiles();
+            await createConfigFiles();
         } else {
             answer = await consola.prompt("Continue setup without registering commands?", { type: "confirm" });
             if (!answer) {
                 throw new Error("You've quit the setup.");
             }
-            createConfigFiles();
+            await createConfigFiles();
         }
     }
 };
@@ -79,11 +80,11 @@ const registerInteractionCommands = async (DISCORD_API: API) => {
 
 // Config files
 
-const createConfigFiles = () => {
+const createConfigFiles = async () => {
     consola.info("Creating configuration files.");
-    fs.writeFileSync('./config/banned_users.txt', Constants.CONFIG_BANNED_USERS_FILE_INTRO);
-    fs.mkdirSync('./_temp', { recursive: true });
-    fs.mkdirSync('./_temp/texts', { recursive: true });
-    fs.writeFileSync('./config/version.txt', Constants.CONFIG_CURRENT_CONFIG_VERSION);
+    await fs.writeFile('./config/banned_users.txt', Constants.CONFIG_BANNED_USERS_FILE_INTRO);
+    await fs.mkdir('./_temp', { recursive: true });
+    await fs.mkdir('./_temp/texts', { recursive: true });
+    await fs.writeFile('./config/version.txt', Constants.CONFIG_CURRENT_CONFIG_VERSION);
     consola.success("Done!");
 };

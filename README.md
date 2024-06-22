@@ -9,7 +9,7 @@
 
 Currently being reworked on.
 
-I'm using the main branch as my development environment. :^)
+This is a more experimental build so don't expect some of the features to make it to the official repository
 
-Hours spent: 
-- ![](https://i.kawaii.sh/G53x6YD.png)
+Official build by Pauleks (epic): 
+- [jermacaption](https://github.com/pauleks/jermacaption)

@@ -19,7 +19,6 @@ type QueueItem = {
   gif: string;
 };
 
-// Initialize the gifQueue array with the specified type
 const gifQueue: QueueItem[] = [];
 let isProcessingGif = false;
 
@@ -50,7 +49,7 @@ export const launchBot = () => {
       }
 
       if (interaction.isMessageContextMenu()) {
-        if (interaction.targetMessage.content == "")
+        if (interaction.targetMessage.content === "")
           return interaction.reply({
             content: ":x: The message must have text.",
             ephemeral: true,
@@ -63,8 +62,8 @@ export const launchBot = () => {
         await interaction.deferReply();
         handleNewGIF(
           interaction,
-          interaction.options.getString("text") as string,
-          interaction.options.getString("gif") as string
+          sanitizeInput(interaction.options.getString("text") as string),
+          sanitizeInput(interaction.options.getString("gif") as string)
         );
       }
     });
@@ -84,17 +83,22 @@ export const launchBot = () => {
   }
 };
 
+const sanitizeInput = (input: string | undefined): string => {
+  if (!input) return "";
+  return input.replace(/[^a-zA-Z0-9_\- ]/g, ""); // Allow only alphanumeric, underscore, hyphen, and space
+};
+
 const returnGIFQuery = (searchQuery: string) => {
   return currentGIFs
     .filter((result) =>
       result.toLowerCase().includes(searchQuery.toLowerCase())
     )
     .slice(0, 25);
-}
+};
 
 const handleAutocomplete = async (interaction: AutocompleteInteraction) => {
-  const searchPhrase = interaction.options.get("gif")?.value as string;
-  if (searchPhrase == "")
+  const searchPhrase = sanitizeInput(interaction.options.get("gif")?.value as string);
+  if (searchPhrase === "")
     return interaction.respond(
       currentGIFs
         .map((result) => ({ name: result, value: result }))
@@ -113,11 +117,9 @@ async function handleNewGIF(
   text: string,
   gif?: string
 ): Promise<void> {
-  if (gif && returnGIFQuery(gif).length == 1) {
-    // If a GIF is provided, call the function to handle the provided GIF
+  if (gif && returnGIFQuery(gif).length === 1) {
     await handleNewGIFWithGif(interaction, text, returnGIFQuery(gif)[0]);
   } else {
-    // If no GIF is provided, call the function to handle a random GIF
     await handleNewGIFWithRandomGif(interaction, text);
   }
 }
@@ -128,10 +130,8 @@ async function handleNewGIFWithGif(
   gif: string
 ): Promise<void> {
   if (isProcessingGif) {
-    // If a GIF is already being processed, add the interaction to the queue
     gifQueue.push({ interaction, text, gif });
   } else {
-    // Otherwise, process the GIF
     isProcessingGif = true;
     await processGif(interaction, text, gif);
   }
