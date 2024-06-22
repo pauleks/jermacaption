@@ -49,7 +49,7 @@ export const launchBot = () => {
       }
 
       if (interaction.isMessageContextMenu()) {
-        if (interaction.targetMessage.content == "")
+        if (interaction.targetMessage.content === "")
           return interaction.reply({
             content: ":x: The message must have text.",
             ephemeral: true,
@@ -62,8 +62,8 @@ export const launchBot = () => {
         await interaction.deferReply();
         handleNewGIF(
           interaction,
-          interaction.options.getString("text") as string,
-          interaction.options.getString("gif") as string
+          sanitizeInput(interaction.options.getString("text") as string),
+          sanitizeInput(interaction.options.getString("gif") as string)
         );
       }
     });
@@ -83,17 +83,22 @@ export const launchBot = () => {
   }
 };
 
+const sanitizeInput = (input: string | undefined): string => {
+  if (!input) return "";
+  return input.replace(/[^a-zA-Z0-9_\- ]/g, ""); // Allow only alphanumeric, underscore, hyphen, and space
+};
+
 const returnGIFQuery = (searchQuery: string) => {
   return currentGIFs
     .filter((result) =>
       result.toLowerCase().includes(searchQuery.toLowerCase())
     )
     .slice(0, 25);
-}
+};
 
 const handleAutocomplete = async (interaction: AutocompleteInteraction) => {
-  const searchPhrase = interaction.options.get("gif")?.value as string;
-  if (searchPhrase == "")
+  const searchPhrase = sanitizeInput(interaction.options.get("gif")?.value as string);
+  if (searchPhrase === "")
     return interaction.respond(
       currentGIFs
         .map((result) => ({ name: result, value: result }))
@@ -112,7 +117,7 @@ async function handleNewGIF(
   text: string,
   gif?: string
 ): Promise<void> {
-  if (gif && returnGIFQuery(gif).length == 1) {
+  if (gif && returnGIFQuery(gif).length === 1) {
     await handleNewGIFWithGif(interaction, text, returnGIFQuery(gif)[0]);
   } else {
     await handleNewGIFWithRandomGif(interaction, text);
